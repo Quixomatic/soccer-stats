@@ -18,16 +18,14 @@ export default function Home() {
     queryFn: api.stats.summary,
   });
 
-  const { data: matchLeaderboard } = useQuery({
+  const { data: matchLeaderboard, isLoading: matchLoading } = useQuery({
     queryKey: ['leaderboard-match'],
     queryFn: () => api.leaderboard.match('points', 50),
-    enabled: tab === 'match',
   });
 
-  const { data: publicLeaderboard } = useQuery({
+  const { data: publicLeaderboard, isLoading: publicLoading } = useQuery({
     queryKey: ['leaderboard-public'],
     queryFn: () => api.leaderboard.public('points', 50),
-    enabled: tab === 'public',
   });
 
   const { data: searchResults } = useQuery({
@@ -37,6 +35,7 @@ export default function Home() {
   });
 
   const currentLeaderboard = tab === 'match' ? matchLeaderboard : publicLeaderboard;
+  const isLoading = tab === 'match' ? matchLoading : publicLoading;
 
   return (
     <div className="min-h-screen bg-background">
@@ -143,21 +142,35 @@ export default function Home() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {currentLeaderboard?.players.map((player, i) => (
-                      <TableRow key={player.steamid}>
-                        <TableCell className="font-medium">{i + 1}</TableCell>
-                        <TableCell>
-                          <Link to={`/player/${player.steamid}`} className="hover:underline">
-                            {player.name}
-                          </Link>
+                    {isLoading ? (
+                      <TableRow>
+                        <TableCell colSpan={tab === 'match' ? 7 : 6} className="text-center text-muted-foreground py-8">
+                          Loading...
                         </TableCell>
-                        <TableCell className="text-right">{player.points}</TableCell>
-                        <TableCell className="text-right">{player.goals}</TableCell>
-                        <TableCell className="text-right">{player.assists}</TableCell>
-                        <TableCell className="text-right">{player.saves}</TableCell>
-                        {tab === 'match' && <TableCell className="text-right">{player.matches}</TableCell>}
                       </TableRow>
-                    ))}
+                    ) : !currentLeaderboard?.players?.length ? (
+                      <TableRow>
+                        <TableCell colSpan={tab === 'match' ? 7 : 6} className="text-center text-muted-foreground py-8">
+                          No players found
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      currentLeaderboard.players.map((player, i) => (
+                        <TableRow key={player.steamid}>
+                          <TableCell className="font-medium">{i + 1}</TableCell>
+                          <TableCell>
+                            <Link to={`/player/${player.steamid}`} className="hover:underline">
+                              {player.name}
+                            </Link>
+                          </TableCell>
+                          <TableCell className="text-right">{player.points}</TableCell>
+                          <TableCell className="text-right">{player.goals}</TableCell>
+                          <TableCell className="text-right">{player.assists}</TableCell>
+                          <TableCell className="text-right">{player.saves}</TableCell>
+                          {tab === 'match' && <TableCell className="text-right">{player.matches}</TableCell>}
+                        </TableRow>
+                      ))
+                    )}
                   </TableBody>
                 </Table>
               </CardContent>

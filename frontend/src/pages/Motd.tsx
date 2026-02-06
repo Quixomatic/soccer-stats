@@ -77,9 +77,9 @@ export default function Motd() {
 
         {/* Match vs Public breakdown */}
         <div className="grid grid-cols-2 gap-3 text-xs">
-          {matchStats && (
-            <div className="bg-zinc-800 rounded p-2">
-              <div className="text-zinc-400 font-medium mb-1">Match Stats</div>
+          <div className="bg-zinc-800 rounded p-2">
+            <div className="text-zinc-400 font-medium mb-1">Match Stats</div>
+            {matchStats ? (
               <div className="space-y-0.5">
                 <Row label="Points" value={matchStats.points} />
                 <Row label="Goals" value={matchStats.goals} />
@@ -89,12 +89,14 @@ export default function Motd() {
                 <Row label="MVP" value={matchStats.mvp} />
                 <Row label="W/L" value={`${matchStats.rounds_won}/${matchStats.rounds_lost}`} />
               </div>
-            </div>
-          )}
+            ) : (
+              <div className="text-zinc-600 text-center py-2">No data</div>
+            )}
+          </div>
 
-          {publicStats && (
-            <div className="bg-zinc-800 rounded p-2">
-              <div className="text-zinc-400 font-medium mb-1">Public Stats</div>
+          <div className="bg-zinc-800 rounded p-2">
+            <div className="text-zinc-400 font-medium mb-1">Public Stats</div>
+            {publicStats ? (
               <div className="space-y-0.5">
                 <Row label="Points" value={publicStats.points} />
                 <Row label="Goals" value={publicStats.goals} />
@@ -103,8 +105,10 @@ export default function Motd() {
                 <Row label="Hits" value={publicStats.hits} />
                 <Row label="Passes" value={publicStats.passes} />
               </div>
-            </div>
-          )}
+            ) : (
+              <div className="text-zinc-600 text-center py-2">No data</div>
+            )}
+          </div>
         </div>
 
         {/* Position breakdown */}

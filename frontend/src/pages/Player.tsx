@@ -67,119 +67,127 @@ export default function Player() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 mb-8">
-          {matchStats && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  Match Stats
-                  <Badge>{matchStats.points} pts</Badge>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-3 gap-4 text-center">
-                  <div>
-                    <div className="text-2xl font-bold">{matchStats.goals}</div>
-                    <div className="text-sm text-muted-foreground">Goals</div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold">{matchStats.assists}</div>
-                    <div className="text-sm text-muted-foreground">Assists</div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold">{matchStats.saves}</div>
-                    <div className="text-sm text-muted-foreground">Saves</div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold">{matchStats.matches}</div>
-                    <div className="text-sm text-muted-foreground">Matches</div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold">{matchStats.mvp}</div>
-                    <div className="text-sm text-muted-foreground">MVP</div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold">{matchStats.motm}</div>
-                    <div className="text-sm text-muted-foreground">MOTM</div>
-                  </div>
-                </div>
-                <div className="mt-4 pt-4 border-t">
-                  <div className="grid grid-cols-2 gap-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Hits:</span>
-                      <span>{matchStats.hits}</span>
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                Match Stats
+                {matchStats && <Badge>{matchStats.points} pts</Badge>}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {matchStats ? (
+                <>
+                  <div className="grid grid-cols-3 gap-4 text-center">
+                    <div>
+                      <div className="text-2xl font-bold">{matchStats.goals}</div>
+                      <div className="text-sm text-muted-foreground">Goals</div>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Passes:</span>
-                      <span>{matchStats.passes}</span>
+                    <div>
+                      <div className="text-2xl font-bold">{matchStats.assists}</div>
+                      <div className="text-sm text-muted-foreground">Assists</div>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Interceptions:</span>
-                      <span>{matchStats.interceptions}</span>
+                    <div>
+                      <div className="text-2xl font-bold">{matchStats.saves}</div>
+                      <div className="text-sm text-muted-foreground">Saves</div>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Ball Losses:</span>
-                      <span>{matchStats.ball_losses}</span>
+                    <div>
+                      <div className="text-2xl font-bold">{matchStats.matches}</div>
+                      <div className="text-sm text-muted-foreground">Matches</div>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Own Goals:</span>
-                      <span>{matchStats.own_goals}</span>
+                    <div>
+                      <div className="text-2xl font-bold">{matchStats.mvp}</div>
+                      <div className="text-sm text-muted-foreground">MVP</div>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">W/L:</span>
-                      <span>{matchStats.rounds_won}/{matchStats.rounds_lost}</span>
+                    <div>
+                      <div className="text-2xl font-bold">{matchStats.motm}</div>
+                      <div className="text-sm text-muted-foreground">MOTM</div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
+                  <div className="mt-4 pt-4 border-t">
+                    <div className="grid grid-cols-2 gap-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Hits:</span>
+                        <span>{matchStats.hits}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Passes:</span>
+                        <span>{matchStats.passes}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Interceptions:</span>
+                        <span>{matchStats.interceptions}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Ball Losses:</span>
+                        <span>{matchStats.ball_losses}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Own Goals:</span>
+                        <span>{matchStats.own_goals}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">W/L:</span>
+                        <span>{matchStats.rounds_won}/{matchStats.rounds_lost}</span>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="text-center text-muted-foreground py-8">No match stats yet</div>
+              )}
+            </CardContent>
+          </Card>
 
-          {publicStats && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  Public Stats
-                  <Badge variant="secondary">{publicStats.points} pts</Badge>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-3 gap-4 text-center">
-                  <div>
-                    <div className="text-2xl font-bold">{publicStats.goals}</div>
-                    <div className="text-sm text-muted-foreground">Goals</div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold">{publicStats.assists}</div>
-                    <div className="text-sm text-muted-foreground">Assists</div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold">{publicStats.saves}</div>
-                    <div className="text-sm text-muted-foreground">Saves</div>
-                  </div>
-                </div>
-                <div className="mt-4 pt-4 border-t">
-                  <div className="grid grid-cols-2 gap-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Hits:</span>
-                      <span>{publicStats.hits}</span>
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                Public Stats
+                {publicStats && <Badge variant="secondary">{publicStats.points} pts</Badge>}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {publicStats ? (
+                <>
+                  <div className="grid grid-cols-3 gap-4 text-center">
+                    <div>
+                      <div className="text-2xl font-bold">{publicStats.goals}</div>
+                      <div className="text-sm text-muted-foreground">Goals</div>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Passes:</span>
-                      <span>{publicStats.passes}</span>
+                    <div>
+                      <div className="text-2xl font-bold">{publicStats.assists}</div>
+                      <div className="text-sm text-muted-foreground">Assists</div>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Interceptions:</span>
-                      <span>{publicStats.interceptions}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Ball Losses:</span>
-                      <span>{publicStats.ball_losses}</span>
+                    <div>
+                      <div className="text-2xl font-bold">{publicStats.saves}</div>
+                      <div className="text-sm text-muted-foreground">Saves</div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
+                  <div className="mt-4 pt-4 border-t">
+                    <div className="grid grid-cols-2 gap-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Hits:</span>
+                        <span>{publicStats.hits}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Passes:</span>
+                        <span>{publicStats.passes}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Interceptions:</span>
+                        <span>{publicStats.interceptions}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Ball Losses:</span>
+                        <span>{publicStats.ball_losses}</span>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="text-center text-muted-foreground py-8">No public stats yet</div>
+              )}
+            </CardContent>
+          </Card>
         </div>
 
         {positions && (
