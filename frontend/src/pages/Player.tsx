@@ -4,6 +4,7 @@ import { api } from '@/lib/api';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
 
 function formatDate(timestamp: number) {
   return new Date(timestamp * 1000).toLocaleDateString();
@@ -13,6 +14,96 @@ function formatPlaytime(seconds: number) {
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
   return `${hours}h ${minutes}m`;
+}
+
+function PlayerSkeleton() {
+  return (
+    <div className="min-h-screen bg-background">
+      <header className="border-b">
+        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+          <Skeleton className="h-5 w-36" />
+          <Skeleton className="h-5 w-32" />
+        </div>
+      </header>
+
+      <main className="container mx-auto px-4 py-8">
+        <div className="mb-8">
+          <Skeleton className="h-9 w-64 mb-2" />
+          <div className="flex gap-4 mt-2">
+            <Skeleton className="h-5 w-28" />
+            <Skeleton className="h-5 w-32" />
+            <Skeleton className="h-5 w-28" />
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
+          {[...Array(2)].map((_, i) => (
+            <Card key={i}>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <Skeleton className="h-6 w-28" />
+                  <Skeleton className="h-6 w-16" />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-3 gap-4 text-center">
+                  {[...Array(6)].map((_, j) => (
+                    <div key={j}>
+                      <Skeleton className="h-8 w-12 mx-auto" />
+                      <Skeleton className="h-4 w-14 mx-auto mt-1" />
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-4 pt-4 border-t">
+                  <div className="grid grid-cols-2 gap-2">
+                    {[...Array(6)].map((_, j) => (
+                      <div key={j} className="flex justify-between">
+                        <Skeleton className="h-4 w-20" />
+                        <Skeleton className="h-4 w-8" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        <Card className="mb-8">
+          <CardHeader>
+            <Skeleton className="h-6 w-36" />
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-6 gap-4 text-center">
+              {[...Array(6)].map((_, i) => (
+                <div key={i}>
+                  <Skeleton className="h-7 w-10 mx-auto" />
+                  <Skeleton className="h-4 w-6 mx-auto mt-1" />
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-6 w-32" />
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="flex justify-between">
+                  <Skeleton className="h-5 w-32" />
+                  <Skeleton className="h-5 w-24" />
+                  <Skeleton className="h-5 w-24" />
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </main>
+    </div>
+  );
 }
 
 export default function Player() {
@@ -25,11 +116,7 @@ export default function Player() {
   });
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-muted-foreground">Loading...</div>
-      </div>
-    );
+    return <PlayerSkeleton />;
   }
 
   if (error || !data) {

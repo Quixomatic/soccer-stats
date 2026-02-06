@@ -1,10 +1,65 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from 'react-router-dom';
 import { api } from '@/lib/api';
+import { Skeleton } from '@/components/ui/skeleton';
 
 function formatPlaytime(seconds: number) {
   const hours = Math.floor(seconds / 3600);
   return `${hours}h`;
+}
+
+function MotdSkeleton() {
+  return (
+    <div className="min-h-screen bg-zinc-900 text-white p-6">
+      <div className="max-w-2xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-6">
+          <Skeleton className="h-10 w-64 mx-auto bg-zinc-800" />
+          <Skeleton className="h-5 w-40 mx-auto mt-2 bg-zinc-800" />
+        </div>
+
+        {/* Main Stats Grid */}
+        <div className="grid grid-cols-4 gap-4 mb-6">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="bg-zinc-800 rounded-lg p-4 text-center">
+              <Skeleton className="h-9 w-16 mx-auto bg-zinc-700" />
+              <Skeleton className="h-4 w-12 mx-auto mt-2 bg-zinc-700" />
+            </div>
+          ))}
+        </div>
+
+        {/* Match vs Public breakdown */}
+        <div className="grid grid-cols-2 gap-4">
+          {[...Array(2)].map((_, i) => (
+            <div key={i} className="bg-zinc-800 rounded-lg p-4">
+              <Skeleton className="h-6 w-28 mb-3 bg-zinc-700" />
+              <div className="space-y-2">
+                {[...Array(6)].map((_, j) => (
+                  <div key={j} className="flex justify-between">
+                    <Skeleton className="h-5 w-16 bg-zinc-700" />
+                    <Skeleton className="h-5 w-10 bg-zinc-700" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Positions */}
+        <div className="mt-4 bg-zinc-800 rounded-lg p-4">
+          <Skeleton className="h-6 w-24 mb-3 bg-zinc-700" />
+          <div className="flex justify-between">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="text-center">
+                <Skeleton className="h-8 w-8 mx-auto bg-zinc-700" />
+                <Skeleton className="h-4 w-6 mx-auto mt-1 bg-zinc-700" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default function Motd() {
@@ -17,11 +72,7 @@ export default function Motd() {
   });
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-zinc-900 text-white flex items-center justify-center">
-        <div className="text-zinc-400">Loading stats...</div>
-      </div>
-    );
+    return <MotdSkeleton />;
   }
 
   if (error || !data) {
@@ -57,18 +108,18 @@ export default function Motd() {
   const totalPoints = (matchStats?.points || 0) + (publicStats?.points || 0);
 
   return (
-    <div className="min-h-screen bg-zinc-900 text-white p-4">
-      <div className="max-w-md mx-auto">
+    <div className="min-h-screen bg-zinc-900 text-white p-6">
+      <div className="max-w-2xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-4">
-          <h1 className="text-xl font-bold text-green-400 truncate">{displayName}</h1>
-          <div className="text-xs text-zinc-500">
+        <div className="text-center mb-6">
+          <h1 className="text-4xl font-bold text-green-400 truncate">{displayName}</h1>
+          <div className="text-lg text-zinc-500 mt-1">
             {formatPlaytime(player.play_time)} played • {favoritePosition}
           </div>
         </div>
 
         {/* Main Stats Grid */}
-        <div className="grid grid-cols-4 gap-2 mb-4">
+        <div className="grid grid-cols-4 gap-4 mb-6">
           <StatBox label="Goals" value={totalGoals} color="text-yellow-400" />
           <StatBox label="Assists" value={totalAssists} color="text-blue-400" />
           <StatBox label="Saves" value={totalSaves} color="text-green-400" />
@@ -76,11 +127,11 @@ export default function Motd() {
         </div>
 
         {/* Match vs Public breakdown */}
-        <div className="grid grid-cols-2 gap-3 text-xs">
-          <div className="bg-zinc-800 rounded p-2">
-            <div className="text-zinc-400 font-medium mb-1">Match Stats</div>
+        <div className="grid grid-cols-2 gap-4 text-base">
+          <div className="bg-zinc-800 rounded-lg p-4">
+            <div className="text-zinc-400 font-semibold text-lg mb-3">Match Stats</div>
             {matchStats ? (
-              <div className="space-y-0.5">
+              <div className="space-y-2">
                 <Row label="Points" value={matchStats.points} />
                 <Row label="Goals" value={matchStats.goals} />
                 <Row label="Assists" value={matchStats.assists} />
@@ -90,14 +141,14 @@ export default function Motd() {
                 <Row label="W/L" value={`${matchStats.rounds_won}/${matchStats.rounds_lost}`} />
               </div>
             ) : (
-              <div className="text-zinc-600 text-center py-2">No data</div>
+              <div className="text-zinc-600 text-center py-4">No data</div>
             )}
           </div>
 
-          <div className="bg-zinc-800 rounded p-2">
-            <div className="text-zinc-400 font-medium mb-1">Public Stats</div>
+          <div className="bg-zinc-800 rounded-lg p-4">
+            <div className="text-zinc-400 font-semibold text-lg mb-3">Public Stats</div>
             {publicStats ? (
-              <div className="space-y-0.5">
+              <div className="space-y-2">
                 <Row label="Points" value={publicStats.points} />
                 <Row label="Goals" value={publicStats.goals} />
                 <Row label="Assists" value={publicStats.assists} />
@@ -106,16 +157,16 @@ export default function Motd() {
                 <Row label="Passes" value={publicStats.passes} />
               </div>
             ) : (
-              <div className="text-zinc-600 text-center py-2">No data</div>
+              <div className="text-zinc-600 text-center py-4">No data</div>
             )}
           </div>
         </div>
 
         {/* Position breakdown */}
         {positions && (
-          <div className="mt-3 bg-zinc-800 rounded p-2">
-            <div className="text-zinc-400 font-medium text-xs mb-1">Positions</div>
-            <div className="flex justify-between text-xs">
+          <div className="mt-4 bg-zinc-800 rounded-lg p-4">
+            <div className="text-zinc-400 font-semibold text-lg mb-3">Positions</div>
+            <div className="flex justify-between text-base">
               <PosBox label="GK" value={positions.gk} />
               <PosBox label="LB" value={positions.lb} />
               <PosBox label="RB" value={positions.rb} />
@@ -127,7 +178,7 @@ export default function Motd() {
         )}
 
         {/* Footer */}
-        <div className="mt-4 text-center text-[10px] text-zinc-600">
+        <div className="mt-6 text-center text-sm text-zinc-600">
           <Link to={`/player/${steamid}`} className="hover:text-zinc-400">
             View Full Stats
           </Link>
@@ -139,18 +190,18 @@ export default function Motd() {
 
 function StatBox({ label, value, color }: { label: string; value: number; color: string }) {
   return (
-    <div className="bg-zinc-800 rounded p-2 text-center">
-      <div className={`text-lg font-bold ${color}`}>{value}</div>
-      <div className="text-[10px] text-zinc-500 uppercase">{label}</div>
+    <div className="bg-zinc-800 rounded-lg p-4 text-center">
+      <div className={`text-3xl font-bold ${color}`}>{value}</div>
+      <div className="text-sm text-zinc-500 uppercase mt-1">{label}</div>
     </div>
   );
 }
 
 function Row({ label, value }: { label: string; value: number | string }) {
   return (
-    <div className="flex justify-between">
+    <div className="flex justify-between text-lg">
       <span className="text-zinc-500">{label}</span>
-      <span className="text-zinc-200">{value}</span>
+      <span className="text-zinc-200 font-medium">{value}</span>
     </div>
   );
 }
@@ -158,8 +209,8 @@ function Row({ label, value }: { label: string; value: number | string }) {
 function PosBox({ label, value }: { label: string; value: number }) {
   return (
     <div className="text-center">
-      <div className="text-zinc-200">{value}</div>
-      <div className="text-zinc-500">{label}</div>
+      <div className="text-zinc-200 text-2xl font-semibold">{value}</div>
+      <div className="text-zinc-500 text-sm">{label}</div>
     </div>
   );
 }

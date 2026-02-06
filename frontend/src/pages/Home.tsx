@@ -6,6 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useState } from 'react';
 
 export default function Home() {
@@ -78,44 +79,57 @@ export default function Home() {
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        {summary && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Total Players</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{summary.totalPlayers}</div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Active (7d)</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{summary.activeLast7Days}</div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Total Goals</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">
-                  {(summary.matchStats.goals + summary.publicStats.goals).toLocaleString()}
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Total Matches</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{summary.matchStats.matches.toLocaleString()}</div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          {summary ? (
+            <>
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">Total Players</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{summary.totalPlayers}</div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">Active (7d)</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{summary.activeLast7Days}</div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">Total Goals</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">
+                    {(summary.matchStats.goals + summary.publicStats.goals).toLocaleString()}
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">Total Matches</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{summary.matchStats.matches.toLocaleString()}</div>
+                </CardContent>
+              </Card>
+            </>
+          ) : (
+            [...Array(4)].map((_, i) => (
+              <Card key={i}>
+                <CardHeader className="pb-2">
+                  <Skeleton className="h-4 w-24" />
+                </CardHeader>
+                <CardContent>
+                  <Skeleton className="h-8 w-16" />
+                </CardContent>
+              </Card>
+            ))
+          )}
+        </div>
 
         <Tabs value={tab} onValueChange={(v) => setSearchParams({ tab: v })}>
           <TabsList className="mb-4">
@@ -143,11 +157,17 @@ export default function Home() {
                   </TableHeader>
                   <TableBody>
                     {isLoading ? (
-                      <TableRow>
-                        <TableCell colSpan={tab === 'match' ? 7 : 6} className="text-center text-muted-foreground py-8">
-                          Loading...
-                        </TableCell>
-                      </TableRow>
+                      [...Array(10)].map((_, i) => (
+                        <TableRow key={i}>
+                          <TableCell><Skeleton className="h-5 w-6" /></TableCell>
+                          <TableCell><Skeleton className="h-5 w-32" /></TableCell>
+                          <TableCell className="text-right"><Skeleton className="h-5 w-12 ml-auto" /></TableCell>
+                          <TableCell className="text-right"><Skeleton className="h-5 w-8 ml-auto" /></TableCell>
+                          <TableCell className="text-right"><Skeleton className="h-5 w-8 ml-auto" /></TableCell>
+                          <TableCell className="text-right"><Skeleton className="h-5 w-8 ml-auto" /></TableCell>
+                          {tab === 'match' && <TableCell className="text-right"><Skeleton className="h-5 w-8 ml-auto" /></TableCell>}
+                        </TableRow>
+                      ))
                     ) : !currentLeaderboard?.players?.length ? (
                       <TableRow>
                         <TableCell colSpan={tab === 'match' ? 7 : 6} className="text-center text-muted-foreground py-8">
