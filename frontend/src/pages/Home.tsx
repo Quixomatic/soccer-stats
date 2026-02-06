@@ -8,11 +8,6 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { useState } from 'react';
 
-function formatPlaytime(seconds: number) {
-  const hours = Math.floor(seconds / 3600);
-  return `${hours}h`;
-}
-
 export default function Home() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState('');

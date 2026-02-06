@@ -1,8 +1,8 @@
-import { Router } from 'express';
+import { Router, type Router as RouterType } from 'express';
 import pool from '../db.js';
 import { RowDataPacket } from 'mysql2';
 
-const router = Router();
+const router: RouterType = Router();
 
 // Get all players with basic info (paginated)
 router.get('/', async (req, res) => {
