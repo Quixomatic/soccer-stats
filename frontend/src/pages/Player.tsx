@@ -46,9 +46,12 @@ export default function Player() {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b">
-        <div className="container mx-auto px-4 py-4">
+        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <Link to="/" className="text-muted-foreground hover:text-foreground">
             &larr; Back to Leaderboard
+          </Link>
+          <Link to={`/motd/${steamid}`} className="text-sm text-muted-foreground hover:text-foreground">
+            View MOTD Version
           </Link>
         </div>
       </header>

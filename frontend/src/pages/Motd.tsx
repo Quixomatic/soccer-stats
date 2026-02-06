@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { api } from '@/lib/api';
 
 function formatPlaytime(seconds: number) {
@@ -128,7 +128,9 @@ export default function Motd() {
 
         {/* Footer */}
         <div className="mt-4 text-center text-[10px] text-zinc-600">
-          Soccer Mod Stats
+          <Link to={`/player/${steamid}`} className="hover:text-zinc-400">
+            View Full Stats
+          </Link>
         </div>
       </div>
     </div>
