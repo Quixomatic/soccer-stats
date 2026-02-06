@@ -20,7 +20,7 @@ app.use('/api/stats', statsRouter);
 
 // Serve frontend in production
 app.use(express.static(path.join(__dirname, '../public')));
-app.get('*', (req, res) => {
+app.get('/{*path}', (req, res) => {
   if (!req.path.startsWith('/api')) {
     res.sendFile(path.join(__dirname, '../public/index.html'));
   }
