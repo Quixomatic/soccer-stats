@@ -1,0 +1,17 @@
+# Add this service to your existing dockge stack alongside the game server and database
+# Example: Add to your existing compose.yaml that has the 'db' MariaDB service
+
+soccer-stats:
+  image: ghcr.io/quixomatic/soccer-stats:latest
+  container_name: soccer-stats
+  restart: unless-stopped
+  ports:
+    - "3000:3000"
+  environment:
+    DB_HOST: db
+    DB_PORT: 3306
+    DB_USER: ${DB_USER:-sourcemod}
+    DB_PASSWORD: ${DB_PASSWORD:-sourcemod}
+    DB_DATABASE: ${DB_DATABASE:-sourcemod}
+  depends_on:
+    - db
