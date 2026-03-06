@@ -8,22 +8,24 @@ const router: RouterType = Router();
 router.get('/match', async (req, res) => {
   try {
     const limit = parseInt(req.query.limit as string) || 50;
-    const sortBy = (req.query.sort as string) || 'points';
+    const sortBy = (req.query.sort as string) || 'points_per_match';
+    const minMatches = parseInt(req.query.min_matches as string) || 3;
 
-    const validSorts = ['points', 'goals', 'assists', 'saves', 'matches'];
-    const sort = validSorts.includes(sortBy) ? sortBy : 'points';
+    const validSorts = ['points', 'points_per_match', 'goals', 'assists', 'saves', 'matches', 'mvp', 'motm'];
+    const sort = validSorts.includes(sortBy) ? sortBy : 'points_per_match';
 
     const [players] = await pool.query<RowDataPacket[]>(`
       SELECT
         ms.*,
-        COALESCE(w.alias, w.current_name, p.name) as name
+        COALESCE(w.alias, w.current_name, p.name) as name,
+        ROUND(ms.points / GREATEST(ms.matches, 1), 1) as points_per_match
       FROM soccer_mod_match_stats ms
       JOIN soccer_mod_players p ON ms.steamid = p.steamid
       LEFT JOIN whois_players w ON ms.steamid = w.steamid
-      WHERE ms.${sort} > 0
-      ORDER BY ms.${sort} DESC
+      WHERE ms.matches >= ?
+      ORDER BY ${sort} DESC
       LIMIT ?
-    `, [limit]);
+    `, [minMatches, limit]);
 
     res.json({ players });
   } catch (error) {
@@ -38,7 +40,7 @@ router.get('/public', async (req, res) => {
     const limit = parseInt(req.query.limit as string) || 50;
     const sortBy = (req.query.sort as string) || 'points';
 
-    const validSorts = ['points', 'goals', 'assists', 'saves'];
+    const validSorts = ['points', 'goals', 'assists', 'saves', 'mvp', 'motm'];
     const sort = validSorts.includes(sortBy) ? sortBy : 'points';
 
     const [players] = await pool.query<RowDataPacket[]>(`

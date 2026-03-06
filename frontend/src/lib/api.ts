@@ -76,6 +76,7 @@ export interface PlayerDetail {
 
 export interface LeaderboardPlayer extends MatchStats {
   name: string;
+  points_per_match?: number;
 }
 
 export interface StatsSummary {

@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.2] - 2026-03-06
+
+### Added
+- MVP and MOTM columns on leaderboard tables
+- Pts/Match computed column on match leaderboard tab
+- Clickable column headers for sorting (active sort shows down arrow)
+- Minimum match threshold for match leaderboard (default 3, configurable via `?min_matches=`)
+
+### Changed
+- Match leaderboard defaults to sorting by Pts/Match
+- Public leaderboard defaults to sorting by Points
+- `mvp` and `motm` now valid sort options for both leaderboard endpoints
+
 ## [1.0.1] - 2026-03-06
 
 ### Added

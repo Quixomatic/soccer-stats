@@ -9,10 +9,15 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useState } from 'react';
 
+type MatchSort = 'points_per_match' | 'points' | 'goals' | 'assists' | 'saves' | 'matches' | 'mvp' | 'motm';
+type PublicSort = 'points' | 'goals' | 'assists' | 'saves' | 'mvp' | 'motm';
+
 export default function Home() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState('');
   const tab = searchParams.get('tab') || 'match';
+  const [matchSort, setMatchSort] = useState<MatchSort>('points_per_match');
+  const [publicSort, setPublicSort] = useState<PublicSort>('points');
 
   const { data: summary } = useQuery({
     queryKey: ['stats-summary'],
@@ -20,13 +25,13 @@ export default function Home() {
   });
 
   const { data: matchLeaderboard, isLoading: matchLoading } = useQuery({
-    queryKey: ['leaderboard-match'],
-    queryFn: () => api.leaderboard.match('points', 50),
+    queryKey: ['leaderboard-match', matchSort],
+    queryFn: () => api.leaderboard.match(matchSort, 50),
   });
 
   const { data: publicLeaderboard, isLoading: publicLoading } = useQuery({
-    queryKey: ['leaderboard-public'],
-    queryFn: () => api.leaderboard.public('points', 50),
+    queryKey: ['leaderboard-public', publicSort],
+    queryFn: () => api.leaderboard.public(publicSort, 50),
   });
 
   const { data: searchResults } = useQuery({
@@ -37,6 +42,24 @@ export default function Home() {
 
   const currentLeaderboard = tab === 'match' ? matchLeaderboard : publicLeaderboard;
   const isLoading = tab === 'match' ? matchLoading : publicLoading;
+  const currentSort = tab === 'match' ? matchSort : publicSort;
+
+  function SortableHead({ label, sortKey, className = '' }: { label: string; sortKey: string; className?: string }) {
+    const isActive = currentSort === sortKey;
+    return (
+      <TableHead
+        className={`text-right cursor-pointer select-none hover:text-foreground ${isActive ? 'text-foreground font-bold' : ''} ${className}`}
+        onClick={() => {
+          if (tab === 'match') setMatchSort(sortKey as MatchSort);
+          else setPublicSort(sortKey as PublicSort);
+        }}
+      >
+        {label}{isActive ? ' \u25BC' : ''}
+      </TableHead>
+    );
+  }
+
+  const matchColumns = tab === 'match';
 
   return (
     <div className="min-h-screen bg-background">
@@ -148,11 +171,14 @@ export default function Home() {
                     <TableRow>
                       <TableHead className="w-12">#</TableHead>
                       <TableHead>Player</TableHead>
-                      <TableHead className="text-right">Points</TableHead>
-                      <TableHead className="text-right">Goals</TableHead>
-                      <TableHead className="text-right">Assists</TableHead>
-                      <TableHead className="text-right">Saves</TableHead>
-                      {tab === 'match' && <TableHead className="text-right">Matches</TableHead>}
+                      {matchColumns && <SortableHead label="Pts/Match" sortKey="points_per_match" />}
+                      <SortableHead label="Points" sortKey="points" />
+                      <SortableHead label="Goals" sortKey="goals" />
+                      <SortableHead label="Assists" sortKey="assists" />
+                      <SortableHead label="Saves" sortKey="saves" />
+                      <SortableHead label="MVP" sortKey="mvp" />
+                      <SortableHead label="MOTM" sortKey="motm" />
+                      {matchColumns && <SortableHead label="Matches" sortKey="matches" />}
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -161,16 +187,14 @@ export default function Home() {
                         <TableRow key={i}>
                           <TableCell><Skeleton className="h-5 w-6" /></TableCell>
                           <TableCell><Skeleton className="h-5 w-32" /></TableCell>
-                          <TableCell className="text-right"><Skeleton className="h-5 w-12 ml-auto" /></TableCell>
-                          <TableCell className="text-right"><Skeleton className="h-5 w-8 ml-auto" /></TableCell>
-                          <TableCell className="text-right"><Skeleton className="h-5 w-8 ml-auto" /></TableCell>
-                          <TableCell className="text-right"><Skeleton className="h-5 w-8 ml-auto" /></TableCell>
-                          {tab === 'match' && <TableCell className="text-right"><Skeleton className="h-5 w-8 ml-auto" /></TableCell>}
+                          {[...Array(matchColumns ? 9 : 7)].map((_, j) => (
+                            <TableCell key={j} className="text-right"><Skeleton className="h-5 w-8 ml-auto" /></TableCell>
+                          ))}
                         </TableRow>
                       ))
                     ) : !currentLeaderboard?.players?.length ? (
                       <TableRow>
-                        <TableCell colSpan={tab === 'match' ? 7 : 6} className="text-center text-muted-foreground py-8">
+                        <TableCell colSpan={matchColumns ? 11 : 9} className="text-center text-muted-foreground py-8">
                           No players found
                         </TableCell>
                       </TableRow>
@@ -183,11 +207,14 @@ export default function Home() {
                               {player.name}
                             </Link>
                           </TableCell>
+                          {matchColumns && <TableCell className="text-right font-semibold">{player.points_per_match}</TableCell>}
                           <TableCell className="text-right">{player.points}</TableCell>
                           <TableCell className="text-right">{player.goals}</TableCell>
                           <TableCell className="text-right">{player.assists}</TableCell>
                           <TableCell className="text-right">{player.saves}</TableCell>
-                          {tab === 'match' && <TableCell className="text-right">{player.matches}</TableCell>}
+                          <TableCell className="text-right">{player.mvp}</TableCell>
+                          <TableCell className="text-right">{player.motm}</TableCell>
+                          {matchColumns && <TableCell className="text-right">{player.matches}</TableCell>}
                         </TableRow>
                       ))
                     )}
