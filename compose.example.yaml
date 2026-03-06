@@ -13,5 +13,6 @@ soccer-stats:
     DB_USER: ${DB_USER:-sourcemod}
     DB_PASSWORD: ${DB_PASSWORD:-sourcemod}
     DB_DATABASE: ${DB_DATABASE:-sourcemod}
+    SYNC_API_KEY: ${SYNC_API_KEY:-}  # Required for /api/sync/* endpoints
   depends_on:
     - db

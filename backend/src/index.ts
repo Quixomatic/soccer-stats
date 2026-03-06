@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 import playersRouter from './routes/players.js';
 import leaderboardRouter from './routes/leaderboard.js';
 import statsRouter from './routes/stats.js';
+import syncRouter from './routes/sync.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use('/api/players', playersRouter);
 app.use('/api/leaderboard', leaderboardRouter);
 app.use('/api/stats', statsRouter);
+app.use('/api/sync', syncRouter);
 
 // Serve frontend in production
 app.use(express.static(path.join(__dirname, '../public')));
